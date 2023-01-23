@@ -1,13 +1,22 @@
-# Your custom Twilio Flex Plugin
+# df-agent-handoff
 
-Twilio Flex Plugins allow you to customize the appearance and behavior of [Twilio Flex](https://www.twilio.com/flex). If you want to learn more about the capabilities and how to use the API, check out our [Flex documentation](https://www.twilio.com/docs/flex).
+The agent handoff plugin creates a new tab in the taskCanvas where it will present data captured in Dialogflow as the result of an Agent Handoff. You must pass parameters in Google DF during the agent handoff request and you must pass parameters via agentHandoffObj sent to flex. The following is an example from Google DF Live Agent Handoff Fulfillment...
+
+{
+"liveAgentHandoff": "New Application",
+"bankProduct": "$session.params.BankProducts",
+  "phoneNumber": "$session.params.PhoneNumber",
+"custName": "$session.params.FirstName"
+}
+
+You also need to add the agentHandoffObj as the name of the object passed as "to_json" from Studio.
 
 ## Setup
 
 Make sure you have [Node.js](https://nodejs.org) as well as [`npm`](https://npmjs.com). We support Node >= 10.12 (and recommend the _even_ versions of Node). Afterwards, install the dependencies by running `npm install`:
 
 ```bash
-cd 
+cd
 
 # If you use npm
 npm install
@@ -28,4 +37,3 @@ twilio plugins:install @twilio-labs/plugin-flex
 ## Development
 
 Run `twilio flex:plugins --help` to see all the commands we currently support. For further details on Flex Plugins refer to our documentation on the [Twilio Docs](https://www.twilio.com/docs/flex/developer/plugins/cli) page.
-
