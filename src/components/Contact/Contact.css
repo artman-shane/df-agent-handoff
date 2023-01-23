@@ -1,0 +1,9 @@
+.contact-info {
+  padding: 20px;
+}
+
+.contact-info h2,
+.contact-info h3 {
+  font-weight: bold;
+  margin: 10px auto 5px auto;
+}
