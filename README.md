@@ -2,12 +2,12 @@
 
 The agent handoff plugin creates a new tab in the taskCanvas where it will present data captured in Dialogflow as the result of an Agent Handoff. You must pass parameters in Google DF during the agent handoff request and you must pass parameters via agentHandoffObj sent to flex. The following is an example from Google DF Live Agent Handoff Fulfillment...
 
-{
+````{
 "liveAgentHandoff": "New Application",
 "bankProduct": "$session.params.BankProducts",
   "phoneNumber": "$session.params.PhoneNumber",
 "custName": "$session.params.FirstName"
-}
+}```
 
 You also need to add the agentHandoffObj as the name of the object passed as "to_json" from Studio.
 
@@ -20,7 +20,7 @@ cd
 
 # If you use npm
 npm install
-```
+````
 
 Next, please install the [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart) by running:
 
