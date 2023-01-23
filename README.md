@@ -11,7 +11,7 @@ The agent handoff plugin creates a new tab in the taskCanvas where it will prese
 }
 ```
 
-You also need to add the agentHandoffObj as the name of the object passed as "to_json" from Studio.
+You also need to add the agentHandoffObj as the name of the object passed from Studio. Note: you will need to conver to JSON obj using Liquid Language as of 1/23/2023 with the function "|to_json" appended to the widget name where the data originates.
 
 ## Setup
 
