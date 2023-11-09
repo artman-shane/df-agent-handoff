@@ -1,20 +1,64 @@
 // styles
 import { Paragraph, Heading } from "@twilio-paste/core";
-import { ThemeProvider } from "@twilio-paste/core";
-import { Icon } from "@twilio/flex-ui";
-import { object } from "prop-types";
 import "./Contact.css";
 
-const CreateInfo = (attribute) => {
-  // console.log("CreateInfo - Attribute:", attribute);
-  return (
-    <>
-      <Heading as="h2" variant="heading10">
-        {attribute[0]}
-      </Heading>
-      {/* {(key && <Paragraph key={key + value}>{value}</Paragraph>) || "No Value"} */}
-    </>
-  );
+const formatAsUSD = (value) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(value);
+};
+
+const formatPhoneNumber = (number) => {
+  const cleaned = ("" + number).replace(/\D/g, ""); // Remove non-numeric characters
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/); // Match groups of 3, 3, and 4 digits
+
+  if (match) {
+    return "(" + match[1] + ") " + match[2] + "-" + match[3];
+  }
+
+  return null; // Return null if the number couldn't be formatted
+};
+
+const printJsonObj = (jsonObj) => {
+  return Object.keys(jsonObj).map((key) => {
+    const value = jsonObj[key];
+    if (!value || (typeof value === "string" && value.startsWith("$"))) {
+      return null;
+    }
+
+    let parsedValue = value;
+
+    let _obj = false;
+    if (typeof value === "string" && value.startsWith("{")) {
+      try {
+        parsedValue = JSON.parse(value);
+        _obj = true;
+        printJsonObj(parsedValue);
+      } catch (err) {
+        console.log("Error paesing JSON", err);
+      }
+    }
+
+    const numericalValue = parseFloat(value);
+
+    return (
+      !_obj && (
+        <div key={key}>
+          <Heading as="h4" variant="heading30">
+            {key} -{" "}
+            {isNaN(numericalValue)
+              ? value
+              : key == "phoneNumber"
+              ? formatPhoneNumber(value)
+              : formatAsUSD(value)}
+          </Heading>
+        </div>
+      )
+    );
+    console.log(`Heading: ${key}`);
+    console.log(`Value: ${jsonObj[key]}`);
+  });
 };
 
 export default function Contact(taskAttributes) {
@@ -45,70 +89,98 @@ export default function Contact(taskAttributes) {
           Direction
         </Heading>
         <Paragraph>{taskInfo.direction}</Paragraph>
+        <br></br>
+        <br></br>
         <Heading as="h2" variant="heading10">
           IVR / Google Dialogflow Handoff Info
-          <br></br>
-          <br></br>
         </Heading>
-        {!agentHandoffParams.applicationInquiry.match(/^\$/) && (
-          <>
-            <Heading as="h3" variant="heading20">
-              Application Inquiry
-            </Heading>
-            <Paragraph>{agentHandoffParams.applicationInquiry}</Paragraph>
-          </>
-        )}
-        {!agentHandoffParams.applicationIntent.match(/^\$/) && (
-          <>
-            <Heading as="h3" variant="heading20">
-              Application Intent
-            </Heading>
-            <Paragraph>{agentHandoffParams.applicationIntent}</Paragraph>
-          </>
-        )}
-        {!agentHandoffParams.applicationNumber.match(/^\$/) && (
-          <>
-            <Heading as="h3" variant="heading20">
-              Application Number
-            </Heading>
-            <Paragraph>{agentHandoffParams.applicationNumber}</Paragraph>
-          </>
-        )}
-        {!agentHandoffParams.applicationSupport.match(/^\$/) && (
-          <>
-            <Heading as="h3" variant="heading20">
-              Application Support
-            </Heading>
-            <Paragraph>{agentHandoffParams.applicationSupport}</Paragraph>
-          </>
-        )}
-        {!agentHandoffParams.bankProduct.match(/^\$/) && (
-          <>
-            <Heading as="h3" variant="heading20">
-              Bank Product
-            </Heading>
-            <Paragraph>{agentHandoffParams.bankProduct}</Paragraph>
-          </>
-        )}
-        {!agentHandoffParams.custName.match(/^\$/) && (
-          <>
-            <Heading as="h3" variant="heading20">
-              Customer Name
-            </Heading>
-            <Paragraph>{agentHandoffParams.custName}</Paragraph>
-          </>
-        )}
-        {!agentHandoffParams.liveAgentHandoff.match(/^\$/) && (
-          <>
-            <Heading as="h3" variant="heading20">
-              Live Agent Handoff Reason
-            </Heading>
-            <Paragraph>{agentHandoffParams.liveAgentHandoff}</Paragraph>
-          </>
-        )}
+        {printJsonObj(agentHandoffParams)}
+        {agentHandoffParams.applicationInquiry &&
+          !agentHandoffParams?.applicationInquiry?.match(/^\$/) && (
+            <>
+              <Heading as="h3" variant="heading20">
+                Application Inquiry
+              </Heading>
+              <Paragraph>{agentHandoffParams.applicationInquiry}</Paragraph>
+            </>
+          )}
+        {agentHandoffParams.applicationIntent &&
+          !agentHandoffParams.applicationIntent.match(/^\$/) && (
+            <>
+              <Heading as="h3" variant="heading20">
+                Application Intent
+              </Heading>
+              <Paragraph>{agentHandoffParams.applicationIntent}</Paragraph>
+            </>
+          )}
+        {agentHandoffParams.applicationNumber &&
+          !agentHandoffParams?.applicationNumber?.match(/^\$/) && (
+            <>
+              <Heading as="h3" variant="heading20">
+                Application Number
+              </Heading>
+              <Paragraph>{agentHandoffParams.applicationNumber}</Paragraph>
+            </>
+          )}
+        {agentHandoffParams.applicationSupport &&
+          !agentHandoffParams?.applicationSupport?.match(/^\$/) && (
+            <>
+              <Heading as="h3" variant="heading20">
+                Application Support
+              </Heading>
+              <Paragraph>{agentHandoffParams.applicationSupport}</Paragraph>
+            </>
+          )}
+        {agentHandoffParams.bankProduct &&
+          !agentHandoffParams?.bankProduct?.match(/^\$/) && (
+            <>
+              <Heading as="h3" variant="heading20">
+                Bank Product
+              </Heading>
+              <Paragraph>{agentHandoffParams.bankProduct}</Paragraph>
+            </>
+          )}
+        {agentHandoffParams.custName &&
+          !agentHandoffParams?.custName?.match(/^\$/) && (
+            <>
+              <Heading as="h3" variant="heading20">
+                Customer Name
+              </Heading>
+              <Paragraph>{agentHandoffParams.custName}</Paragraph>
+            </>
+          )}
+        {agentHandoffParams.liveAgentHandoff &&
+          !agentHandoffParams?.liveAgentHandoff?.match(/^\$/) && (
+            <>
+              <Heading as="h3" variant="heading20">
+                Live Agent Handoff Reason
+              </Heading>
+              <Paragraph>{agentHandoffParams.liveAgentHandoff}</Paragraph>
+            </>
+          )}
+        {agentHandoffParams.loanInformation &&
+          !agentHandoffParams.loanInformation?.match(/^\$/) && (
+            <>
+              <Heading as="h3" variant="heading20">
+                Loan Information
+              </Heading>
+              {printJsonObj(
+                JSON.parse(
+                  taskInfo.agentHandoffObj.AgentHandoffParameters
+                    .loanInformation
+                )
+              )}
+            </>
+          )}
       </div>
     );
   } catch {
-    return <div className="contact-info">No Info - There was a problem getting data from Dialogflow</div>;
+    return (
+      <div className="contact-info">
+        {typeof taskInfo.agentHandoffObj === "object"
+          ? 'No Info - There was a problem getting data from Dialogflow'
+          : 'No Data'}
+      </div>
+    );
   }
 }
